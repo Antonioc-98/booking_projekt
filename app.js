@@ -1,10 +1,9 @@
 const express = require('express');
 const app = express();
 const mysql = require('mysql');
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
-
-app.set('view-engine', 'ejs');
-app.use(express.urlencoded({ extended: false }));
 
 // Create connection
 
@@ -25,7 +24,30 @@ db.connect((err) => {
     console.log('MySql connected...');
 });
 
+const sessionStore = new MySQLStore({}/* session store options */, db);
+
+app.set('view-engine', 'ejs');
+app.use(express.urlencoded({ extended: false }));
+app.use(session({
+    secret: 'abcd',
+    saveUninitialized: false,
+    resave: false,
+    store: sessionStore,
+    cookie: {
+        maxAge: 60000,
+    }
+}));
+
+
+
+
+
+//https://www.youtube.com/watch?v=TDe7DRYK8vU
+//https://www.youtube.com/watch?v=oExWh86IgHA
 app.get('/', (req, res) => {
+    console.log(req.session)
+    console.log(req.session.id)
+    req.session.isAuth = true;
     res.render('index.ejs', {proba: 'Radi'});
 });
 
