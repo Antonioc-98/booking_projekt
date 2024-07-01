@@ -3,6 +3,8 @@ const app = express();
 const mysql = require('mysql');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
+const bcrypt = require('bcryptjs')
+const passport = require('passport')
 
 
 // Create connection
@@ -34,21 +36,22 @@ app.use(session({
     resave: false,
     store: sessionStore,
     cookie: {
-        maxAge: 60000,
+        maxAge: 60000 * 10,
     }
 }));
-
-
-
-
+app.use(passport.initialize());
+app.use(passport.session());
 
 //https://www.youtube.com/watch?v=TDe7DRYK8vU
 //https://www.youtube.com/watch?v=oExWh86IgHA
 app.get('/', (req, res) => {
     console.log(req.session)
     console.log(req.session.id)
-    req.session.isAuth = true;
     res.render('index.ejs', {proba: 'Radi'});
+});
+
+app.get('/login', (req, res) => {
+    res.render('login.ejs');
 });
 
 app.get('/register', (req, res) => {
@@ -61,11 +64,19 @@ app.get('/register_status', (req, res) => {
 
 //Provjera
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
+    req.session.isAuth = true;
 
-    let user = {ime: req.body.first_name, prezime: req.body.last_name, email: req.body.email, lozinkaHashed: req.body.password}
+    const lozinka = await bcrypt.hash(req.body.password, 10);
+
+    let user = {
+        ime: req.body.first_name, 
+        prezime: req.body.last_name, 
+        email: req.body.email, 
+        lozinkaHashed: lozinka
+    }
     let registerStatus = ''
-
+    
     db.query(`SELECT email FROM users WHERE email = '${req.body.email}'`, (error, result) => {
         if (error) throw error;
         if(result.length != 0) {
