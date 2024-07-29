@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
+const path = require('path')
 const mysql = require('mysql');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
@@ -31,6 +33,7 @@ const sessionStore = new MySQLStore({}/* session store options */, db);
 
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(session({
     secret: 'abcd',
     saveUninitialized: false,
@@ -60,14 +63,16 @@ passport.use(new LocalStrategy({usernameField: 'email'}, function verify(usernam
     });
   }));
 
+// Serialize user
+
 passport.serializeUser(function(user, done) {
     console.log(`Serialized: ${user}`)
     console.log(`Serialized user id: ${user.id}`)
     done(null, user.email); 
-   // where is this user.id going? Are we supposed to access this anywhere?
 });
 
-// used to deserialize the user
+// Deserialize user
+
 passport.deserializeUser(function(id, done) {
     db.query(`SELECT email FROM users WHERE email = '${user.email}'`, (error, result) => {
         //console.log(`Deserialized: ${result[0]}`)
@@ -76,10 +81,24 @@ passport.deserializeUser(function(id, done) {
     });
 });
 
+// Check if logged in middleware
+
+function loggedIn(req, res, next) {
+    if (req.user) {
+        next();
+    } else {
+        res.redirect('/login_false');
+    }
+}
+
 //https://www.youtube.com/watch?v=_lZUq39FGv0 8.29
 
 //https://www.youtube.com/watch?v=TDe7DRYK8vU
 //https://www.youtube.com/watch?v=oExWh86IgHA
+
+//Slike za kamp
+//https://secure.phobs.net/book.php?page=cross_selling&companyid=956&hotelid=5761&checkin=2024-07-29&checkout=2024-07-30&ibelang=hr&unitid=27783&crcid=62d973b617cb21b6ad74eb1248fb4ac7&eccode=eyJjaGVja19hZ2Fpbl9ub3RlIjp0cnVlfQ%253D%253D
+
 app.get('/', (req, res) => {
     console.log(req.session)
     console.log(req.session.id)
@@ -98,6 +117,14 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
 
 app.get('/register', (req, res) => {
     res.render('register.ejs');
+});
+
+app.get('/login_test', loggedIn, (req, res) => {
+    res.render('login_test.ejs');
+});
+
+app.get('/login_false', (req, res) => {
+    res.render('login_false.ejs');
 });
 
 app.get('/register_status', (req, res) => {
