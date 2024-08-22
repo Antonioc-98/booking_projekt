@@ -105,6 +105,10 @@ app.get('/', (req, res) => {
     res.render('index.ejs', {proba: 'Radi'});
 });
 
+app.get('/rezervacija', (req, res) => {
+    res.render('rezervacija.ejs');
+});
+
 app.get('/login', (req, res) => {
     console.log(req.session)
     console.log(req.session.id)

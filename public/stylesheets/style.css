@@ -16,3 +16,283 @@ a {
 	text-decoration: none;
 	color: inherit;
 }
+
+.wallpaper {
+	background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+		url(/images/kamp_slika.png);
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: center;
+	height: 600px;
+	width: 100%;
+	background-size: cover;
+}
+
+.logo {
+	height: 70px;
+}
+
+.izbornik {
+	display: grid;
+	grid-template-columns: 4fr 2fr 2fr 2fr;
+	align-items: center;
+	padding-bottom: 15px;
+	padding-top: 15px;
+	height: 70px;
+}
+
+.izbornik_logo {
+	display: flex;
+	justify-content: left;
+	padding-left: 50px;
+}
+
+.izbornik_logo img {
+	transition: all 200ms ease;
+}
+
+.izbornik_logo img:hover {
+	scale: 110%;
+}
+
+.izbornik_linkovi {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
+	font-size: large;
+	border-bottom: 1px solid;
+}
+
+.izbornik_vanjski {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: large;
+}
+
+.izbornik_unutarnji {
+	transition: all 200ms ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 200px;
+	height: 40px;
+}
+
+.izbornik_unutarnji:hover {
+	background-color: #04aa6d;
+	border-radius: 10px;
+	color: white;
+	font-weight: 500;
+}
+
+.wallpaper_nav {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.kamp_adriatic {
+	display: flex;
+	padding-bottom: 50px;
+	color: white;
+	font-style: italic;
+	font-size: 45px;
+	font-weight: 600;
+	text-shadow: 0.04em 0 black, 0 0.04em black, -0.04em 0 black, 0 -0.04em black;
+}
+
+.ka_padding {
+}
+
+.rezerviraj_btn {
+	transition: all 200ms ease;
+	display: flex;
+	background-color: #04aa6d; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 18px;
+	font-weight: 550;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.rezerviraj_btn:hover {
+	scale: 105%;
+	background-color: #ff973b;
+}
+
+.opis {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.opis_naslov {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #ff973b;
+	font-size: 30px;
+	font-weight: 500;
+	padding-top: 40px;
+}
+
+.opis_tekst {
+	padding-left: 40px;
+	padding-right: 40px;
+	display: flex;
+	justify-content: center;
+	padding-top: 40px;
+	text-align: justify;
+}
+
+.kamp_slike {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+}
+
+.img_holder_kamp {
+	display: flex;
+	padding: 20px;
+	max-height: 300px;
+	max-width: 500px;
+	border-radius: 5px;
+}
+
+.img_holder_kamp img {
+	transition: all 200ms ease;
+	max-width: 100%;
+	max-height: 100%;
+	border-radius: 5px;
+}
+
+.img_holder_kamp img:hover {
+	scale: 101%;
+}
+
+.footer {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	height: 150px;
+	background-color: #ff973b;
+	color: white;
+	font-size: 18px;
+	font-weight: 500;
+}
+
+/*---- REZERVACIJA.EJS ----*/
+
+.rezervacija_naslov {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #ff973b;
+	font-size: 30px;
+	font-weight: 500;
+	padding-top: 40px;
+}
+
+.plan_div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+	max-width: 100%;
+	border-radius: 5px;
+}
+
+.plan_div img {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	max-width: 90%;
+	border-radius: 5px;
+}
+
+.kartice {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: start;
+	flex-wrap: wrap;
+	row-gap: 30px;
+	column-gap: 30px;
+	height: auto;
+	min-height: 750px;
+}
+
+.kartica {
+	transition: all 125ms ease;
+	display: grid;
+	grid-template-rows: 50px 250px 50px 180px 140px;
+	height: 680px;
+	width: 390px;
+	border-radius: 25px;
+	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+		0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.kartica:hover {
+	scale: 101%;
+}
+
+.kartica_naslov {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.kartica img {
+	height: 250px;
+	width: 100%;
+	border-radius: 25px;
+}
+
+.kartica_informacije {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.kartica_rezerviraj {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.kartica_btn {
+	transition: all 250ms ease;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid;
+	border-radius: 15px;
+	height: 50px;
+	width: 300px;
+	background-color: #04aa6d;
+	color: white;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.kartica_btn:hover {
+	background-color: #ff973b;
+}
