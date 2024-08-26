@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./stylesheets/style.css" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet" />
+	</head>
+	<body>
+		<h1><%= locals.dValue %></h1>
+
+		<% if(locals.dValue.length != 0) { %>
+		<form action="/mb_2" method="POST">
+			<% for (let i = 0; i < locals.dValue.length; i++) { %> <%
+			console.log(locals.dValue.length) %>
+			<h1><%= locals.dValue[i] %></h1>
+			<input
+				type="checkbox"
+				id="<%= locals.dId[i] %>"
+				name="<%= locals.dId[i] %>"
+				value="<%= locals.dValue[i] %>" />
+			<label for="<%= locals.dId[i] %>"
+				><%= `Datum: ${locals.dValue[i]}` %></label
+			><br />
+			<% } %>
+			<input type="submit" value="Submit" />
+		</form>
+		<% } else { %>
+		<h1>Nema dostupnih datuma za rezervaciju</h1>
+		<%}%>
+	</body>
+</html>

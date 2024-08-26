@@ -19,7 +19,7 @@
 					<div class="izbornik_unutarnji">Početna</div>
 				</div>
 			</a>
-			<a href="#onama" class="izbornik_linkovi">
+			<a href="/#onama" class="izbornik_linkovi">
 				<div class="izbornik_vanjski">
 					<div class="izbornik_unutarnji">O nama</div>
 				</div>
@@ -32,24 +32,8 @@
 		</div>
 	</header>
 	<body>
-		<form action="/register" method="POST">
-			<div>
-				<label for="name">Ime</label>
-				<input type="text" name="first_name" id="first_name" required />
-			</div>
-			<div>
-				<label for="name">Prezime</label>
-				<input type="text" name="last_name" id="last_name" required />
-			</div>
-			<div>
-				<label for="email">Email</label>
-				<input type="email" name="email" id="email" required />
-			</div>
-			<div>
-				<label for="password">Password</label>
-				<input type="password" name="password" id="password" required />
-			</div>
-			<button type="submit">Register</button>
-		</form>
+		<p><%= locals.parcelaValue %></p>
+		<p>Rezervirani datumi: <%= locals.datumiValue %></p>
+		<p>Ako želite promijeniti ili otkazati rezervaciju, kontaktirajte nas.</p>
 	</body>
 </html>

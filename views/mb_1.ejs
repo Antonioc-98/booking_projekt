@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./stylesheets/style.css" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet" />
+	</head>
+	<header>
+		<div class="izbornik">
+			<div class="izbornik_logo">
+				<img src="./images/LOGO.svg" alt="" class="logo" />
+			</div>
+			<a href="/" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Početna</div>
+				</div>
+			</a>
+			<a href="#onama" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">O nama</div>
+				</div>
+			</a>
+			<a href="/" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Moje rezervacije</div>
+				</div>
+			</a>
+		</div>
+	</header>
+	<body>
+		<% if(locals.dValue.length != 0) { %>
+		<form action="/mb_1" method="POST">
+			<% for (let i = 0; i < locals.dValue.length; i++) { %>
+			<h1><%= locals.dValue[i] %></h1>
+			<input
+				type="checkbox"
+				class="value-checkbox"
+				id="<%= locals.dId[i] %>"
+				name="<%= locals.dId[i] %>"
+				value="<%= locals.dValue[i] %>" />
+			<label for="<%= locals.dId[i] %>"
+				><%= `Datum: ${locals.dValue[i]}` %>
+				<br />
+				<p><%=`${locals.dCijena[i]}`%></p></label
+			><br />
+			<% } %>
+			<input type="submit" value="Submit" />
+			<h3>Total Sum: <span id="totalSum">0</span></h3>
+		</form>
+		<% } else { %>
+		<h1>Nema dostupnih datuma za rezervaciju</h1>
+		<%}%>
+	</body>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// Select all checkboxes
+			const checkboxes = document.querySelectorAll(".value-checkbox");
+			const totalSumDisplay = document.getElementById("totalSum");
+
+			// Function to calculate the sum of the numbers in selected checkboxes
+			function calculateSum() {
+				let totalSum = 0;
+
+				// Iterate through each checkbox to check if it is checked
+				checkboxes.forEach((checkbox) => {
+					if (checkbox.checked) {
+						// If checked, find the paragraph element inside the label and parse its content as an integer
+						const paragraph = checkbox.nextElementSibling.querySelector("p");
+						const number = parseInt(paragraph.textContent);
+						totalSum += number;
+					}
+				});
+
+				// Update the total sum display
+				totalSumDisplay.textContent = totalSum;
+			}
+
+			// Add event listeners to all checkboxes to trigger sum calculation when checked or unchecked
+			checkboxes.forEach((checkbox) => {
+				checkbox.addEventListener("change", calculateSum);
+			});
+		});
+	</script>
+</html>

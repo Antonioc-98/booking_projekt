@@ -8,6 +8,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const LocalStrategy = require('passport-local');
+const bodyParser = require('body-parser');
 
 
 // Create connection
@@ -32,6 +33,7 @@ db.connect((err) => {
 const sessionStore = new MySQLStore({}/* session store options */, db);
 
 app.set('view-engine', 'ejs');
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(session({
@@ -100,24 +102,61 @@ function loggedIn(req, res, next) {
 //https://secure.phobs.net/book.php?page=cross_selling&companyid=956&hotelid=5761&checkin=2024-07-29&checkout=2024-07-30&ibelang=hr&unitid=27783&crcid=62d973b617cb21b6ad74eb1248fb4ac7&eccode=eyJjaGVja19hZ2Fpbl9ub3RlIjp0cnVlfQ%253D%253D
 
 app.get('/', (req, res) => {
-    console.log(req.session)
-    console.log(req.session.id)
-    res.render('index.ejs', {proba: 'Radi'});
+    res.render('index.ejs', {
+        proba: 'Radi',
+        loginEmail: req.session.passport});
 });
+
+// Moje rezervacije
 
 app.get('/rezervacija', (req, res) => {
     res.render('rezervacija.ejs');
 });
 
+app.get('/moje_rezervacije', (req, res) => {
+    let rezerviraniDatumi = [];
+    let parcela = 'Mobilna kuća 1';
+
+    db.query(`SELECT datum FROM mb_1 WHERE korisnik_email = 'a@a'`, (error, result) => {  
+        
+        for (let i = 0; i<result.length; i++) {
+            rezerviraniDatumi[i] = (result[i].datum)
+            }
+            console.log(rezerviraniDatumi)
+
+        res.render('moje_rezervacije.ejs', {
+            datumiValue: rezerviraniDatumi,
+            parcelaValue: parcela
+        });
+    });
+    
+});
+
 app.get('/login', (req, res) => {
     console.log(req.session)
     console.log(req.session.id)
+    console.log(req.session.passport)
+    if (req.user) {
+    console.log(req.user.email)
+}
+
     res.render('login.ejs');
 });
 
 app.post('/login', passport.authenticate('local'), (req, res) => {
-    res.render('index.ejs');
+    res.redirect('/');
 });
+
+// Passport logout
+
+app.post('/logout', function(req, res, next){
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.redirect('/');
+    });
+  });
+
+//
 
 app.get('/register', (req, res) => {
     res.render('register.ejs');
@@ -169,7 +208,97 @@ app.post('/register', async (req, res) => {
     });
 });
 
+// Generiranje datuma
 
+app.get('/generiranje_datuma', (req, res) => {
+    res.render('generiranje_datuma.ejs', {});
+});
+
+app.post('/generiranje_datuma', (req, res) => {
+    let d = 24;
+    for (let i = 0; i < 4; i++) {
+        d++;
+        console.log(d)
+        let datumGen = `2024-08-${d}`;
+
+        let user = {
+            datum: datumGen, 
+            status: 1, 
+            cijena: 40,
+        };
+
+        let sql = 'INSERT INTO mb_1 SET ?';
+        db.query(sql, user, (error, result) => {
+            if (error) throw error;
+            console.log(result);     
+        });
+    };
+
+    res.render('odabir.ejs', {});
+    
+});
+
+// Prikaz i odabir slobodnih datuma za rezervaciju
+
+app.get('/odabir', (req, res) => {
+    res.render('odabir.ejs', {});
+});
+
+// mb_1
+
+app.get('/mb_1', loggedIn, (req, res) => {
+
+    let datumValue = [];
+    let datumId = [];
+    let datumCijena = [];
+    const currentDate = new Date();
+    currentDateSplit = currentDate.toISOString().split('T')[0]
+
+// Prikaži datume ne starije od danas.
+
+    db.query(`SELECT id FROM mb_1 WHERE datum = '${currentDateSplit}'`, (error, result) => {
+        datumDanas = result[0].id;
+        //console.log(typeof(result[0].id))
+
+//
+
+    db.query(`SELECT datum, id, cijena FROM mb_1 WHERE status = 1 AND id > ${datumDanas}`, (error, result) => {  
+        
+        for (let i = 0; i<result.length; i++) {
+        datumValue[i] = (result[i].datum)
+        datumId[i] = (result[i].id)
+        datumCijena[i] = (result[i].cijena)
+        }
+        //console.log(result)
+        //console.log(datumValue)
+        //console.log(datumId)
+        //console.log(datumCijena)
+        //console.log(currentDateSplit)
+        res.render('mb_1.ejs', {
+            dValue: datumValue,
+            dId: datumId,
+            dCijena: datumCijena
+
+        });
+    });
+});
+    
+});
+
+app.post('/mb_1', (req, res) => {
+
+    let size = Object.keys(req.body).length;
+    console.log(`size: ${size}`)
+    // For object length
+    for (const [key, value] of Object.entries(req.body)) {
+        db.query(`UPDATE mb_1 SET status = 0, korisnik_email = '${req.user.email}' WHERE datum = '${value}'`, (error, result) => {  
+            console.log(result)
+        });
+      }
+    res.render('odabir.ejs', {});
+});
+
+// Localhost
 
 app.listen('3000', () => {
     console.log('Server started on port 3000...');

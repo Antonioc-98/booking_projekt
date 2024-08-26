@@ -25,7 +25,7 @@
 						<div class="izbornik_unutarnji">O nama</div>
 					</div>
 				</a>
-				<a href="/" class="izbornik_linkovi">
+				<a href="/moje_rezervacije" class="izbornik_linkovi">
 					<div class="izbornik_vanjski">
 						<div class="izbornik_unutarnji">Moje rezervacije</div>
 					</div>
@@ -74,7 +74,13 @@
 		</main>
 		<footer>
 			<div class="footer">
+				<% if(locals.loginEmail) { %>
+				<form action="/logout" method="POST">
+					<button type="logout">Logout</button>
+				</form>
+				<% } else { %>
 				<a href="./login">Prijavi se</a>
+				<%}%>
 				<a href="./register">Registriraj se</a>
 			</div>
 		</footer>
