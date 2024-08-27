@@ -238,7 +238,7 @@ a {
 	transition: all 125ms ease;
 	display: grid;
 	grid-template-rows: 50px 250px 50px 180px 140px;
-	height: 680px;
+	height: 700px;
 	width: 390px;
 	border-radius: 25px;
 	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
@@ -295,4 +295,23 @@ a {
 
 .kartica_btn:hover {
 	background-color: #ff973b;
+}
+
+.kartica_btn_nedostupno {
+	transition: all 250ms ease;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid;
+	border-radius: 15px;
+	height: 50px;
+	width: 300px;
+	background-color: #04aa6d;
+	color: white;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.kartica_btn_nedostupno:hover {
+	background-color: gray;
 }

@@ -32,8 +32,20 @@
 		</div>
 	</header>
 	<body>
-		<p><%= locals.parcelaValue %></p>
-		<p>Rezervirani datumi: <%= locals.datumiValue %></p>
+		<% if(locals.datumiValue) { %>
+		<p>Rezervirani datumi za Mobilnu kuću 1</p>
+		<% for (let i = 0; i < locals.datumiValue.length; i++) { %> <%
+		if(locals.parcelaValue[i] === 1) { %>
+		<p><%= locals.datumiValue[i] %></p>
+		<% } %> <% } %> <% } %>
+		<br />
+		<% if(locals.datumiValue) { %>
+		<p>Rezervirani datumi za Mobilnu kuću 2</p>
+		<% for (let i = 0; i < locals.datumiValue.length; i++) { %> <%
+		if(locals.parcelaValue[i] === 2) { %>
+		<p><%= locals.datumiValue[i] %></p>
+		<% } %> <% } %> <% } %>
+		<br />
 		<p>Ako želite promijeniti ili otkazati rezervaciju, kontaktirajte nas.</p>
 	</body>
 </html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./stylesheets/style.css" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet" />
+	</head>
+	<header>
+		<div class="izbornik">
+			<div class="izbornik_logo">
+				<img src="./images/LOGO.svg" alt="" class="logo" />
+			</div>
+			<a href="/cijena_admin" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Promijeni cijenu</div>
+				</div>
+			</a>
+			<a href="/rezerviraj_admin" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Rezerviraj</div>
+				</div>
+			</a>
+			<a href="/otkazivanje_admin" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Otkaži</div>
+				</div>
+			</a>
+		</div>
+	</header>
+	<body>
+		<form action="/cijena_admin" method="POST">
+			<div>
+				<label for="parcela">Parcela:</label>
+				<input type="number" name="parcela" id="parcela" required />
+			</div>
+			<div>
+				<label for="datum">Datum:</label>
+				<input type="text" name="datum" id="datum" required />
+			</div>
+			<div>
+				<label for="cijena">Cijena</label>
+				<input type="number" name="cijena" id="cijena" required />
+			</div>
+			<button type="submit">Login</button>
+		</form>
+		<h2><%= locals.stateDisplay %></h2>
+	</body>
+</html>

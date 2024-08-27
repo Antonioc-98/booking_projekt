@@ -42,7 +42,7 @@ app.use(session({
     resave: false,
     store: sessionStore,
     cookie: {
-        maxAge: 60000 * 10,
+        maxAge: 60000 * 30,
     }
 }));
 app.use(passport.initialize());
@@ -51,14 +51,18 @@ app.use(passport.session());
 // Passport login
 
 passport.use(new LocalStrategy({usernameField: 'email'}, function verify(username, password, done) {
-    db.query(`SELECT email FROM users WHERE email = '${username}'`, (error, result) => {
+    db.query(`SELECT email, lozinkaHashed FROM users WHERE email = '${username}'`, (error, result) => {
     console.log('Provjera login')  
     if (error) { return done(error); }
       if (result.length === 0) { 
         console.log('Incorrect username or password.')
         return done(null, false, {
         message: 'Incorrect username or password.' }); 
-        }
+        } else if (result[0].lozinkaHashed != password) {
+            console.log('Incorrect Password.')
+            return done(null, false, {
+            message: 'Incorrect username or password.' }); 
+        };
         user = result[0];
         console.log(user.email)
       return done(null, user);
@@ -93,6 +97,16 @@ function loggedIn(req, res, next) {
     }
 }
 
+function loggedInA(req, res, next) {
+    if (req.user) {
+        if (req.user.email = 'kamp.admin@adriatic.com') {
+        next();
+    }
+    } else {
+        res.redirect('/login_false');
+    }
+}
+
 //https://www.youtube.com/watch?v=_lZUq39FGv0 8.29
 
 //https://www.youtube.com/watch?v=TDe7DRYK8vU
@@ -113,14 +127,15 @@ app.get('/rezervacija', (req, res) => {
     res.render('rezervacija.ejs');
 });
 
-app.get('/moje_rezervacije', (req, res) => {
+app.get('/moje_rezervacije', loggedIn, (req, res) => {
     let rezerviraniDatumi = [];
-    let parcela = 'Mobilna kuća 1';
+    let parcela = [];
 
-    db.query(`SELECT datum FROM mb_1 WHERE korisnik_email = 'a@a'`, (error, result) => {  
-        
+    db.query(`SELECT datum, parcela_id FROM mb_1 WHERE korisnik_email = '${req.user.email}' UNION SELECT datum, parcela_id FROM mb_2 WHERE korisnik_email = '${req.user.email}'`, (error, result) => {  
+        console.log(result);
         for (let i = 0; i<result.length; i++) {
-            rezerviraniDatumi[i] = (result[i].datum)
+            rezerviraniDatumi[i] = result[i].datum;
+            parcela[i] = result[i].parcela_id;
             }
             console.log(rezerviraniDatumi)
 
@@ -131,6 +146,9 @@ app.get('/moje_rezervacije', (req, res) => {
     });
     
 });
+
+//
+
 
 app.get('/login', (req, res) => {
     console.log(req.session)
@@ -215,11 +233,11 @@ app.get('/generiranje_datuma', (req, res) => {
 });
 
 app.post('/generiranje_datuma', (req, res) => {
-    let d = 24;
-    for (let i = 0; i < 4; i++) {
+    let d = 0;
+    for (let i = 0; i < 30; i++) {
         d++;
         console.log(d)
-        let datumGen = `2024-08-${d}`;
+        let datumGen = `2024-09-${d}`;
 
         let user = {
             datum: datumGen, 
@@ -227,7 +245,7 @@ app.post('/generiranje_datuma', (req, res) => {
             cijena: 40,
         };
 
-        let sql = 'INSERT INTO mb_1 SET ?';
+        let sql = 'INSERT INTO mb_2 SET ?';
         db.query(sql, user, (error, result) => {
             if (error) throw error;
             console.log(result);     
@@ -297,6 +315,98 @@ app.post('/mb_1', (req, res) => {
       }
     res.render('odabir.ejs', {});
 });
+
+// mb_2
+
+app.get('/mb_2', loggedIn, (req, res) => {
+
+    let datumValue = [];
+    let datumId = [];
+    let datumCijena = [];
+    const currentDate = new Date();
+    currentDateSplit = currentDate.toISOString().split('T')[0]
+
+// Prikaži datume ne starije od danas.
+
+    db.query(`SELECT id FROM mb_2 WHERE datum = '${currentDateSplit}'`, (error, result) => {
+        datumDanas = result[0].id;
+        //console.log(typeof(result[0].id))
+
+    db.query(`SELECT datum, id, cijena FROM mb_2 WHERE status = 1 AND id > ${datumDanas}`, (error, result) => {  
+        
+        for (let i = 0; i<result.length; i++) {
+        datumValue[i] = (result[i].datum)
+        datumId[i] = (result[i].id)
+        datumCijena[i] = (result[i].cijena)
+        }
+        //console.log(result)
+        //console.log(datumValue)
+        //console.log(datumId)
+        //console.log(datumCijena)
+        //console.log(currentDateSplit)
+        res.render('mb_2.ejs', {
+            dValue: datumValue,
+            dId: datumId,
+            dCijena: datumCijena
+
+        });
+    });
+});
+    
+});
+
+app.post('/mb_2', (req, res) => {
+
+    let size = Object.keys(req.body).length;
+    console.log(`size: ${size}`)
+    // For object length
+    for (const [key, value] of Object.entries(req.body)) {
+        db.query(`UPDATE mb_2 SET status = 0, korisnik_email = '${req.user.email}' WHERE datum = '${value}'`, (error, result) => {  
+            console.log(result)
+        });
+      }
+    res.render('odabir.ejs', {});
+});
+
+// Admin
+
+app.get('/admin', (req, res) => {
+    res.render('admin.ejs');
+});
+
+app.get('/cijena_admin', (req, res) => {
+    res.render('cijena_admin.ejs');
+});
+
+app.post('/cijena_admin', (req, res) => {
+    console.log(req.body.parcela)
+    console.log(req.body.datum)
+    console.log(req.body.cijena)
+
+    let mbParcela = `mb_${req.body.parcela}`
+    console.log(mbParcela)
+    let state = '';
+
+    db.query(`UPDATE ${mbParcela} SET cijena = ${req.body.cijena} WHERE datum = '${req.body.datum}'`, (error, result) => {  
+        console.log(result)
+        if (result != 0) {
+            state === 'Greška, pokušajte ponovno'
+        } else {
+            state = 'Cijena uspješno promijenjena'
+        }
+        res.render('cijena_admin.ejs', {stateDisplay: state});
+    });
+});
+
+app.get('/rezerviraj_admin', (req, res) => {
+    res.render('rezerviraj_admin.ejs');
+});
+
+app.get('/otkazivanje_admin', (req, res) => {
+    res.render('otkazivanje_admin.ejs');
+});
+
+
 
 // Localhost
 
