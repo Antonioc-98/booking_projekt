@@ -32,20 +32,41 @@
 		</div>
 	</header>
 	<body>
-		<form action="/cijena_admin" method="POST">
-			<div>
-				<label for="parcela">Parcela:</label>
-				<input type="number" name="parcela" id="parcela" required />
+		<form action="/cijena_admin" method="POST" class="form_field_A">
+			<div class="input_okvir">
+				<div>
+					<div class="input_field_text">Parcela</div>
+					<label for="parcela"></label>
+					<input
+						type="number"
+						name="parcela"
+						id="parcela"
+						required
+						class="input_field_A" />
+				</div>
+				<div>
+					<div class="input_field_text">Datum</div>
+					<label for="datum"></label>
+					<input
+						type="text"
+						name="datum"
+						id="datum"
+						required
+						class="input_field_A" />
+				</div>
+				<div>
+					<div class="input_field_text">Cijena</div>
+					<label for="cijena"></label>
+					<input
+						type="number"
+						name="cijena"
+						id="cijena"
+						required
+						class="input_field_A" />
+				</div>
+				<br />
+				<button type="submit" class="promijeni_btn">Promijeni</button>
 			</div>
-			<div>
-				<label for="datum">Datum:</label>
-				<input type="text" name="datum" id="datum" required />
-			</div>
-			<div>
-				<label for="cijena">Cijena</label>
-				<input type="number" name="cijena" id="cijena" required />
-			</div>
-			<button type="submit">Login</button>
 		</form>
 		<h2><%= locals.stateDisplay %></h2>
 	</body>

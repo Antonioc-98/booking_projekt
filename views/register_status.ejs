@@ -4,7 +4,33 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
+		<link rel="stylesheet" href="./stylesheets/style.css" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet" />
 	</head>
+	<header>
+		<div class="izbornik">
+			<div class="izbornik_logo">
+				<img src="./images/LOGO.svg" alt="" class="logo" />
+			</div>
+			<a href="/" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Početna</div>
+				</div>
+			</a>
+			<a href="#onama" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">O nama</div>
+				</div>
+			</a>
+			<a href="/" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Moje rezervacije</div>
+				</div>
+			</a>
+		</div>
+	</header>
 	<body>
 		<h2><%= locals.resolved %></h2>
 		<a href="/login">Prijavi se</a>

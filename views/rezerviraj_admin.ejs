@@ -31,5 +31,43 @@
 			</a>
 		</div>
 	</header>
-	<body></body>
+	<body>
+		<form action="/rezerviraj_admin" method="POST" class="form_field_A">
+			<div class="input_okvir">
+				<div>
+					<div class="input_field_text">Parcela</div>
+					<label for="parcela"></label>
+					<input
+						type="number"
+						name="parcela"
+						id="parcela"
+						required
+						class="input_field_A" />
+				</div>
+				<div>
+					<div class="input_field_text">Datum</div>
+					<label for="datum"></label>
+					<input
+						type="text"
+						name="datum"
+						id="datum"
+						required
+						class="input_field_A" />
+				</div>
+				<div>
+					<div class="input_field_text">Email</div>
+					<label for="email"></label>
+					<input
+						type="email"
+						name="email"
+						id="email"
+						required
+						class="input_field_A" />
+				</div>
+				<br />
+				<button type="submit" class="promijeni_btn">Rezerviraj</button>
+			</div>
+		</form>
+		<h2><%= locals.stateDisplay %></h2>
+	</body>
 </html>

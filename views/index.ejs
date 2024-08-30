@@ -9,29 +9,29 @@
 			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
 			rel="stylesheet" />
 	</head>
-	<body>
-		<header>
-			<div class="izbornik">
-				<div class="izbornik_logo">
-					<img src="./images/LOGO.svg" alt="" class="logo" />
-				</div>
-				<a href="/" class="izbornik_linkovi">
-					<div class="izbornik_vanjski">
-						<div class="izbornik_unutarnji">Početna</div>
-					</div>
-				</a>
-				<a href="#onama" class="izbornik_linkovi">
-					<div class="izbornik_vanjski">
-						<div class="izbornik_unutarnji">O nama</div>
-					</div>
-				</a>
-				<a href="/moje_rezervacije" class="izbornik_linkovi">
-					<div class="izbornik_vanjski">
-						<div class="izbornik_unutarnji">Moje rezervacije</div>
-					</div>
-				</a>
+	<header>
+		<div class="izbornik">
+			<div class="izbornik_logo">
+				<img src="./images/LOGO.svg" alt="" class="logo" />
 			</div>
-		</header>
+			<a href="/" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Početna</div>
+				</div>
+			</a>
+			<a href="#onama" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">O nama</div>
+				</div>
+			</a>
+			<a href="/moje_rezervacije" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Moje rezervacije</div>
+				</div>
+			</a>
+		</div>
+	</header>
+	<body>
 		<main>
 			<div class="wallpaper">
 				<div class="wallpaper_nav">
@@ -74,14 +74,27 @@
 		</main>
 		<footer>
 			<div class="footer">
+				<% if(locals.loginEmail) { %> <% if(locals.loginEmailVlasnik ===
+				'kamp.vlasnik@adriatic.com') { %>
+				<a href="./vlasnik">
+					<div class="index_btn">Vlasnik panel</div>
+				</a>
+				<% } %><% } %>
+				<a href="./kontakt">
+					<div class="index_btn">Kontakt</div>
+				</a>
 				<% if(locals.loginEmail) { %>
 				<form action="/logout" method="POST">
-					<button type="logout">Logout</button>
+					<button type="logout" class="logout_btn">Logout</button>
 				</form>
 				<% } else { %>
-				<a href="./login">Prijavi se</a>
+				<a href="./login">
+					<div class="index_btn">Prijavi se</div>
+				</a>
+				<a href="./register">
+					<div class="index_btn">Registriraj se</div>
+				</a>
 				<%}%>
-				<a href="./register">Registriraj se</a>
 			</div>
 		</footer>
 	</body>

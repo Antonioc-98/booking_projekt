@@ -176,10 +176,12 @@ a {
 	max-width: 100%;
 	max-height: 100%;
 	border-radius: 5px;
+	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+		0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
 .img_holder_kamp img:hover {
-	scale: 101%;
+	scale: 100.5%;
 }
 
 .footer {
@@ -187,10 +189,27 @@ a {
 	flex-direction: column;
 	justify-content: space-evenly;
 	align-items: center;
-	height: 150px;
 	background-color: #ff973b;
 	color: white;
 	font-size: 18px;
+	font-weight: 500;
+	padding: 20px;
+}
+
+.index_btn {
+	transition: all 200ms ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 210px;
+	height: 50px;
+	font-weight: 630px;
+}
+
+.index_btn:hover {
+	background-color: #04aa6d;
+	border-radius: 10px;
+	color: white;
 	font-weight: 500;
 }
 
@@ -314,4 +333,205 @@ a {
 
 .kartica_btn_nedostupno:hover {
 	background-color: gray;
+}
+
+/*/vlasnik*/
+
+.statistika {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: start;
+}
+
+.statistika_datumi {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 15px;
+	border: 1px solid black;
+	border-radius: 7px;
+}
+
+.statistika_naslov {
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.statistika_prihodi {
+	font-weight: 600;
+}
+
+/* Kalendar */
+
+.kalendar_form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-left: 35px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	scale: 120%;
+}
+
+.kalendar {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+
+.kalendar_rows {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: start;
+}
+
+.kalendar_unutarnji {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+	width: 150px;
+	height: 70px;
+	margin: 5px;
+	background-color: #04aa6d;
+	color: white;
+	font-weight: 700;
+	border-radius: 7px;
+}
+
+.kalendar_unutarnji:hover {
+	transition: all 250ms ease;
+	scale: 102%;
+	background-color: #ff973b;
+}
+
+.cijena {
+	font-size: 5px;
+	color: #04aa6d;
+}
+
+.kalendar_info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 10px;
+	padding-right: 5px;
+}
+
+/*------------------*/
+
+.input_field_A {
+	width: 350px;
+	height: 35px;
+	border: white 3px solid;
+	border-radius: 5px;
+	font-size: larger;
+}
+
+.input_field_text {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 5px;
+	font-size: 20px;
+}
+
+.input_okvir {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 5px;
+	background-color: #04aa6d;
+	width: 500px;
+	padding: 25px;
+	color: white;
+	font-weight: 600;
+}
+
+.form_field_A {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.promijeni_btn {
+	transition: all 200ms ease;
+	display: flex;
+	background-color: #ff973b;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 18px;
+	font-weight: 600;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.promijeni_btn:hover {
+	scale: 105%;
+}
+
+/* login_false.ejs */
+
+.login_false_btn {
+	transition: all 200ms ease;
+	display: flex;
+	background-color: #04aa6d;
+	border: none;
+	color: white;
+	padding: 13px 28px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: 600;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.login_false_btn:hover {
+	scale: 105%;
+	background-color: #ff973b;
+}
+
+.logout_btn {
+	transition: all 200ms ease;
+	display: flex;
+	background-color: #04aa6d;
+	border: none;
+	color: white;
+	padding: 13px 28px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	font-weight: 600;
+	border-radius: 5px;
+	cursor: pointer;
+	margin: 10px;
+}
+
+.logout_btn:hover {
+	scale: 105%;
 }

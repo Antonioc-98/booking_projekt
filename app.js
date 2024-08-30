@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const LocalStrategy = require('passport-local');
 const bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
 
 
 // Create connection
@@ -42,7 +43,7 @@ app.use(session({
     resave: false,
     store: sessionStore,
     cookie: {
-        maxAge: 60000 * 30,
+        maxAge: 60000 * 100,
     }
 }));
 app.use(passport.initialize());
@@ -99,7 +100,17 @@ function loggedIn(req, res, next) {
 
 function loggedInA(req, res, next) {
     if (req.user) {
-        if (req.user.email = 'kamp.admin@adriatic.com') {
+        if (req.user.email === 'kamp.admin@adriatic.com') {
+        next();
+    }
+    } else {
+        res.redirect('/login_false');
+    }
+}
+
+function loggedInV(req, res, next) {
+    if (req.user) {
+        if (req.user.email === 'kamp.vlasnik@adriatic.com') {
         next();
     }
     } else {
@@ -116,10 +127,21 @@ function loggedInA(req, res, next) {
 //https://secure.phobs.net/book.php?page=cross_selling&companyid=956&hotelid=5761&checkin=2024-07-29&checkout=2024-07-30&ibelang=hr&unitid=27783&crcid=62d973b617cb21b6ad74eb1248fb4ac7&eccode=eyJjaGVja19hZ2Fpbl9ub3RlIjp0cnVlfQ%253D%253D
 
 app.get('/', (req, res) => {
+    let emailVlasnik = '';
+    if (req.user) {
+        emailVlasnik = req.user.email;
+    };
     res.render('index.ejs', {
         proba: 'Radi',
-        loginEmail: req.session.passport});
+        loginEmail: req.session.passport,
+        loginEmailVlasnik: emailVlasnik
+    });
 });
+
+app.get('/kontakt', (req, res) => {
+    res.render('kontakt.ejs');
+});
+
 
 // Moje rezervacije
 
@@ -303,7 +325,9 @@ app.get('/mb_1', loggedIn, (req, res) => {
     
 });
 
-app.post('/mb_1', (req, res) => {
+app.post('/mb_1', loggedIn, (req, res) => {
+
+    let random = Math.floor(Math.random() * 100000000);
 
     let size = Object.keys(req.body).length;
     console.log(`size: ${size}`)
@@ -313,6 +337,45 @@ app.post('/mb_1', (req, res) => {
             console.log(result)
         });
       }
+
+    //Nodemailer
+
+    db.query(`SELECT datum, cijena FROM mb_1 WHERE korisnik_email = '${req.user.email}'`, (error, result) => {  
+        
+    let cijenaValue = [];
+    let datumValue = [];
+    for (let i = 0; i < result.length; i++) {
+        datumValue[i] = result[i].datum;
+        cijenaValue[i] = result[i].cijena;
+    }
+
+    const suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'antonio.praksa@gmail.com',
+          pass: 'koup eyxk yjzz rbur'
+        }
+      });
+      
+      let mailOptions = {
+        from: 'antonio.praksa@gmail.com',
+        to: req.user.email,
+        subject: `Rezervacija broj ${random}`,
+        text: `Uspješno ste rezervirali za datume ${datumValue}. Ukupna cijena ${suma} EUR. Ugodan boravak želi vam Kamp Adriatic!`
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    });
+    //
+      
     res.render('odabir.ejs', {});
 });
 
@@ -355,7 +418,9 @@ app.get('/mb_2', loggedIn, (req, res) => {
     
 });
 
-app.post('/mb_2', (req, res) => {
+app.post('/mb_2', loggedIn, (req, res) => {
+
+    let random = Math.floor(Math.random() * 100000000);
 
     let size = Object.keys(req.body).length;
     console.log(`size: ${size}`)
@@ -365,47 +430,158 @@ app.post('/mb_2', (req, res) => {
             console.log(result)
         });
       }
+
+    //Nodemailer
+
+    db.query(`SELECT datum, cijena FROM mb_2 WHERE korisnik_email = '${req.user.email}'`, (error, result) => {  
+        
+        let cijenaValue = [];
+        let datumValue = [];
+        for (let i = 0; i < result.length; i++) {
+            datumValue[i] = result[i].datum;
+            cijenaValue[i] = result[i].cijena;
+        }
+    
+        const suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+    
+          let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'antonio.praksa@gmail.com',
+              pass: 'koup eyxk yjzz rbur'
+            }
+          });
+          
+          let mailOptions = {
+            from: 'antonio.praksa@gmail.com',
+            to: req.user.email,
+            subject: `Rezervacija broj ${random}`,
+            text: `Uspješno ste rezervirali za datume ${datumValue}. Ukupna cijena ${suma} EUR. Ugodan boravak želi vam Kamp Adriatic!`
+          };
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
+        });
+        //
+
     res.render('odabir.ejs', {});
 });
 
 // Admin
 
-app.get('/admin', (req, res) => {
+app.get('/admin', loggedInA, (req, res) => {
     res.render('admin.ejs');
 });
 
-app.get('/cijena_admin', (req, res) => {
+app.get('/cijena_admin', loggedInA, (req, res) => {
     res.render('cijena_admin.ejs');
 });
 
-app.post('/cijena_admin', (req, res) => {
-    console.log(req.body.parcela)
-    console.log(req.body.datum)
-    console.log(req.body.cijena)
-
+app.post('/cijena_admin', loggedInA, (req, res) => {
     let mbParcela = `mb_${req.body.parcela}`
-    console.log(mbParcela)
     let state = '';
 
     db.query(`UPDATE ${mbParcela} SET cijena = ${req.body.cijena} WHERE datum = '${req.body.datum}'`, (error, result) => {  
         console.log(result)
-        if (result != 0) {
-            state === 'Greška, pokušajte ponovno'
+        if (result) {
+            state = 'Cijena uspješno promijenjena!'
         } else {
-            state = 'Cijena uspješno promijenjena'
+            state = 'Greška, pokušajte ponovno!'
         }
         res.render('cijena_admin.ejs', {stateDisplay: state});
     });
 });
 
-app.get('/rezerviraj_admin', (req, res) => {
+app.get('/rezerviraj_admin', loggedInA, (req, res) => {
     res.render('rezerviraj_admin.ejs');
 });
 
-app.get('/otkazivanje_admin', (req, res) => {
+app.post('/rezerviraj_admin', loggedInA, (req, res) => {
+    let mbParcela = `mb_${req.body.parcela}`
+    let state = '';
+    console.log(req.body.datum);
+    console.log(req.body.email);
+
+    db.query(`UPDATE ${mbParcela} SET korisnik_email = '${req.body.email}', status = 0 WHERE datum = '${req.body.datum}'`, (error, result) => {  
+        console.log(result)
+        if (result) {
+            state = 'Datum uspješno rezerviran!'
+        } else {
+            state = 'Greška, pokušajte ponovno!'
+        }
+        res.render('rezerviraj_admin.ejs', {stateDisplay: state});
+    });
+});
+
+app.get('/otkazivanje_admin', loggedInA, (req, res) => {
     res.render('otkazivanje_admin.ejs');
 });
 
+app.post('/otkazivanje_admin', loggedInA, (req, res) => {
+    let mbParcela = `mb_${req.body.parcela}`
+    let state = '';
+    let deleteDatum = '';
+    console.log(req.body.datum);
+    console.log(req.body.email);
+
+    db.query(`UPDATE ${mbParcela} SET korisnik_email = '${deleteDatum}', status = 1 WHERE datum = '${req.body.datum}'`, (error, result) => {  
+        console.log(result)
+        if (result) {
+            state = 'Datum uspješno otkazan!'
+        } else {
+            state = 'Greška, pokušajte ponovno!'
+        }
+        res.render('otkazivanje_admin.ejs', {stateDisplay: state});
+    });
+});
+
+// Vlasnik
+
+app.get('/vlasnik', loggedInV, (req, res) => {
+    let datumValue = [];
+    let cijenaValue = [];
+    let emailValue = [];
+    db.query(`SELECT datum, cijena, korisnik_email FROM mb_1 WHERE status = 0`, (error, result) => {  
+        for (let i = 0; i < result.length; i++) {
+            datumValue[i] = result[i].datum;
+            cijenaValue[i] = result[i].cijena;
+            emailValue[i] = result[i].korisnik_email;
+        }
+        const suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+
+        let datumValue_2 = [];
+    let cijenaValue_2 = [];
+    let emailValue_2 = [];
+
+    db.query(`SELECT datum, cijena, korisnik_email FROM mb_2 WHERE status = 0`, (error, result) => {  
+        for (let i = 0; i < result.length; i++) {
+            datumValue_2[i] = result[i].datum;
+            cijenaValue_2[i] = result[i].cijena;
+            emailValue_2[i] = result[i].korisnik_email;
+        }
+        const suma_2 = cijenaValue_2.reduce((partialSum, a) => partialSum + a, 0);
+
+        res.render('vlasnik.ejs', {
+            dValue: datumValue,
+            cValue: cijenaValue,
+            eValue: emailValue,
+            sum: suma,
+            dValue_2: datumValue_2,
+            cValue_2: cijenaValue_2,
+            eValue_2: emailValue_2,
+            sum_2: suma_2
+        });
+    });
+    });
+
+    
+    
+});
 
 
 // Localhost

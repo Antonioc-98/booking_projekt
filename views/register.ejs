@@ -32,24 +32,51 @@
 		</div>
 	</header>
 	<body>
-		<form action="/register" method="POST">
-			<div>
-				<label for="name">Ime</label>
-				<input type="text" name="first_name" id="first_name" required />
+		<form action="/register" method="POST" class="form_field_A">
+			<div class="input_okvir">
+				<div class="input_field_text">Ime</div>
+				<div>
+					<label for="name"></label>
+					<input
+						type="text"
+						name="first_name"
+						id="first_name"
+						required
+						class="input_field_A" />
+				</div>
+				<div class="input_field_text">Prezime</div>
+				<div>
+					<label for="name"></label>
+					<input
+						type="text"
+						name="last_name"
+						id="last_name"
+						required
+						class="input_field_A" />
+				</div>
+				<div>
+					<div class="input_field_text">Email</div>
+					<label for="email"></label>
+					<input
+						type="email"
+						name="email"
+						id="email"
+						required
+						class="input_field_A" />
+				</div>
+				<div class="input_field_text">Lozinka</div>
+				<div>
+					<label for="password"></label>
+					<input
+						type="password"
+						name="password"
+						id="password"
+						required
+						class="input_field_A" />
+				</div>
+				<br />
+				<button type="submit" class="promijeni_btn">Register</button>
 			</div>
-			<div>
-				<label for="name">Prezime</label>
-				<input type="text" name="last_name" id="last_name" required />
-			</div>
-			<div>
-				<label for="email">Email</label>
-				<input type="email" name="email" id="email" required />
-			</div>
-			<div>
-				<label for="password">Password</label>
-				<input type="password" name="password" id="password" required />
-			</div>
-			<button type="submit">Register</button>
 		</form>
 	</body>
 </html>

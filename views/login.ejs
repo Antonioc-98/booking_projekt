@@ -32,16 +32,31 @@
 		</div>
 	</header>
 	<body>
-		<form action="/login" method="POST">
-			<div>
-				<label for="email">Email</label>
-				<input type="email" name="email" id="email" required />
+		<form action="/login" method="POST" class="form_field_A">
+			<div class="input_okvir">
+				<div class="input_field_text">Email</div>
+				<div>
+					<label for="email"></label>
+					<input
+						type="email"
+						name="email"
+						id="email"
+						required
+						class="input_field_A" />
+				</div>
+				<div class="input_field_text">Lozinka</div>
+				<div>
+					<label for="password"></label>
+					<input
+						type="password"
+						name="password"
+						id="password"
+						required
+						class="input_field_A" />
+				</div>
+				<br />
+				<button type="submit" class="promijeni_btn">Prijavi se</button>
 			</div>
-			<div>
-				<label for="password">Password</label>
-				<input type="password" name="password" id="password" required />
-			</div>
-			<button type="submit">Login</button>
 		</form>
 	</body>
 </html>

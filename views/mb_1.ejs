@@ -32,28 +32,34 @@
 		</div>
 	</header>
 	<body>
-		<% if(locals.dValue.length != 0) { %>
-		<form action="/mb_1" method="POST">
-			<% for (let i = 0; i < locals.dValue.length; i++) { %>
-			<h1><%= locals.dValue[i] %></h1>
-			<input
-				type="checkbox"
-				class="value-checkbox"
-				id="<%= locals.dId[i] %>"
-				name="<%= locals.dId[i] %>"
-				value="<%= locals.dValue[i] %>" />
-			<label for="<%= locals.dId[i] %>"
-				><%= `Datum: ${locals.dValue[i]}` %>
-				<br />
-				<p><%=`${locals.dCijena[i]}`%></p></label
-			><br />
-			<% } %>
-			<input type="submit" value="Submit" />
-			<h3>Total Sum: <span id="totalSum">0</span></h3>
-		</form>
-		<% } else { %>
-		<h1>Nema dostupnih datuma za rezervaciju</h1>
-		<%}%>
+		<div class="kalendar">
+			<% if(locals.dValue.length != 0) { %>
+			<form action="/mb_1" method="POST" class="kalendar_form">
+				<div class="kalendar_rows">
+					<% for (let i = 0; i < locals.dValue.length; i++) { %>
+					<div class="kalendar_unutarnji">
+						<input
+							type="checkbox"
+							class="value-checkbox container"
+							id="<%= locals.dId[i] %>"
+							name="<%= locals.dId[i] %>"
+							value="<%= locals.dValue[i] %>" />
+						<label for="<%= locals.dId[i] %> " class="kalendar_info">
+							<p class="cijena"><%= locals.dCijena[i] %></p>
+
+							<div><%= locals.dValue[i] %></div>
+							<div><%=`EUR ${locals.dCijena[i]}`%></div>
+						</label>
+					</div>
+					<% } %>
+				</div>
+				<h3>Ukupna cijena: EUR <span id="totalSum">0</span></h3>
+				<button type="submit" class="promijeni_btn">Rezerviraj</button>
+			</form>
+			<% } else { %>
+			<h1>Nema dostupnih datuma za rezervaciju</h1>
+			<%}%>
+		</div>
 	</body>
 
 	<script>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./stylesheets/style.css" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet" />
+	</head>
+	<header>
+		<div class="izbornik">
+			<div class="izbornik_logo">
+				<img src="./images/LOGO.svg" alt="" class="logo" />
+			</div>
+			<a href="/" class="izbornik_linkovi">
+				<div class="izbornik_vanjski">
+					<div class="izbornik_unutarnji">Početna</div>
+				</div>
+			</a>
+		</div>
+	</header>
+	<body>
+		<div class="statistika">
+			<div class="statistika_datumi">
+				<% if(locals.dValue) { %>
+				<p class="statistika_naslov">Sve rezervacije za Mobilnu kuću 1</p>
+				<% for (let i = 0; i < locals.dValue.length; i++) { %>
+				<p>
+					<%= `${locals.dValue[i]}, ${locals.cValue[i]} EUR,
+					${locals.eValue[i]}` %>
+				</p>
+				<% } %>
+				<p class="statistika_prihodi">
+					<%= `Ukupni prihodi: ${locals.sum} EUR` %>
+				</p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_2) { %>
+				<p class="statistika_naslov">Sve rezervacije za Mobilnu kuću 2</p>
+				<% for (let i = 0; i < locals.dValue_2.length; i++) { %>
+				<p>
+					<%= `${locals.dValue_2[i]}, ${locals.cValue_2[i]} EUR,
+					${locals.eValue_2[i]}` %>
+				</p>
+				<% } %>
+				<p class="statistika_prihodi">
+					<%= `Ukupni prihodi: ${locals.sum_2} EUR` %>
+				</p>
+				<% } %>
+			</div>
+		</div>
+	</body>
+</html>
