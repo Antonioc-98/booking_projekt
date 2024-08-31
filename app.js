@@ -51,15 +51,34 @@ app.use(passport.session());
 
 // Passport login
 
+// Function to hash a password using bcrypt
+async function hashPassword(password) {
+    const saltRounds = 10; // Number of salt rounds
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        return hashedPassword;
+    } catch (err) {
+        console.error('Error hashing password:', err);
+        throw err; // Re-throw error to handle it outside the function
+    }
+}
+
 passport.use(new LocalStrategy({usernameField: 'email'}, function verify(username, password, done) {
+
+    
+
     db.query(`SELECT email, lozinkaHashed FROM users WHERE email = '${username}'`, (error, result) => {
     console.log('Provjera login')  
+
+    let hash_compare = bcrypt.compareSync(password, result[0].lozinkaHashed);
+    console.log(hash_compare)
+
     if (error) { return done(error); }
       if (result.length === 0) { 
         console.log('Incorrect username or password.')
         return done(null, false, {
         message: 'Incorrect username or password.' }); 
-        } else if (result[0].lozinkaHashed != password) {
+        } else if (hash_compare != true) {
             console.log('Incorrect Password.')
             return done(null, false, {
             message: 'Incorrect username or password.' }); 
@@ -216,6 +235,8 @@ app.get('/register_status', (req, res) => {
 
 //Provjera
 
+
+
 app.post('/register', async (req, res) => {
     req.session.isAuth = true;
 
@@ -225,7 +246,7 @@ app.post('/register', async (req, res) => {
         ime: req.body.first_name, 
         prezime: req.body.last_name, 
         email: req.body.email, 
-        lozinkaHashed: req.body.password
+        lozinkaHashed: lozinka
     }
     let registerStatus = ''
     
@@ -246,6 +267,14 @@ app.post('/register', async (req, res) => {
         };
         res.render('register_status.ejs', {resolved: registerStatus});
     });
+});
+
+app.get('/promijeni_lozinku', (req, res) => {
+    res.render('promijeni_lozinku.ejs');
+});
+
+app.post('/promijeni_lozinku', (req, res) => {
+    res.render('login.ejs');
 });
 
 // Generiranje datuma
@@ -525,19 +554,37 @@ app.get('/otkazivanje_admin', loggedInA, (req, res) => {
 app.post('/otkazivanje_admin', loggedInA, (req, res) => {
     let mbParcela = `mb_${req.body.parcela}`
     let state = '';
-    let deleteDatum = '';
+    let deleteEmail = '';
+    let emailK = '';
     console.log(req.body.datum);
     console.log(req.body.email);
 
-    db.query(`UPDATE ${mbParcela} SET korisnik_email = '${deleteDatum}', status = 1 WHERE datum = '${req.body.datum}'`, (error, result) => {  
+    db.query(`SELECT korisnik_email FROM ${mbParcela} WHERE datum = '${req.body.datum}'`, (error, result) => {  
+        emailK = result[0].korisnik_email
+   
+
+    db.query(`UPDATE ${mbParcela} SET korisnik_email = '${deleteEmail}', status = 1 WHERE datum = '${req.body.datum}'`, (error, result) => {  
         console.log(result)
         if (result) {
             state = 'Datum uspješno otkazan!'
         } else {
             state = 'Greška, pokušajte ponovno!'
         }
+
+        
+        let user = {
+            korisnik_email: emailK,
+            opis: req.body.razlog
+        };
+
+        let sql = 'INSERT INTO otkazivanje SET ?';
+        db.query(sql, user, (error, result) => {
+            if (error) throw error;
+            console.log(result);     
+        });
         res.render('otkazivanje_admin.ejs', {stateDisplay: state});
     });
+});
 });
 
 // Vlasnik
