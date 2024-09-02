@@ -11,28 +11,32 @@
 	</head>
 	<header>
 		<div class="izbornik">
-			<div class="izbornik_logo">
-				<img src="./images/LOGO.svg" alt="" class="logo" />
+			<div class="izbornik_1_2">
+				<div class="izbornik_logo">
+					<img src="./images/LOGO.svg" alt="" class="logo" />
+				</div>
 			</div>
-			<a href="/" class="izbornik_linkovi">
-				<div class="izbornik_vanjski">
-					<div class="izbornik_unutarnji">Početna</div>
-				</div>
-			</a>
-			<a href="#onama" class="izbornik_linkovi">
-				<div class="izbornik_vanjski">
-					<div class="izbornik_unutarnji">O nama</div>
-				</div>
-			</a>
-			<a href="/" class="izbornik_linkovi">
-				<div class="izbornik_vanjski">
-					<div class="izbornik_unutarnji">Moje rezervacije</div>
-				</div>
-			</a>
+			<div class="izbornik_2_2">
+				<a href="/" class="izbornik_linkovi">
+					<div class="izbornik_vanjski">
+						<div class="izbornik_unutarnji">Početna</div>
+					</div>
+				</a>
+				<a href="#onama" class="izbornik_linkovi">
+					<div class="izbornik_vanjski">
+						<div class="izbornik_unutarnji">O nama</div>
+					</div>
+				</a>
+				<a href="/moje_rezervacije" class="izbornik_linkovi">
+					<div class="izbornik_vanjski">
+						<div class="izbornik_unutarnji">Moje rezervacije</div>
+					</div>
+				</a>
+			</div>
 		</div>
 	</header>
 	<body>
-		<form action="/login" method="POST" class="form_field_A">
+		<form action="/promijeni_lozinku" method="POST" class="form_field_A">
 			<div class="input_okvir">
 				<div class="input_field_text">Email</div>
 				<div>
@@ -44,20 +48,15 @@
 						required
 						class="input_field_A" />
 				</div>
-				<div class="input_field_text">Nova lozinka</div>
-				<div>
-					<label for="password"></label>
-					<input
-						type="password"
-						name="password"
-						id="password"
-						required
-						class="input_field_A" />
-				</div>
 				<br />
 				<button type="submit" class="promijeni_btn">Pošalji</button>
 			</div>
 		</form>
-		<h1>Nova lozinka će biti poslana na email</h1>
+		<h3 style="display: flex; justify-content: center; align-items: center">
+			<%= locals.obavijest %>
+		</h3>
+		<h3 style="display: flex; justify-content: center; align-items: center">
+			Kod za promjenu lozinke će biti poslan na email
+		</h3>
 	</body>
 </html>

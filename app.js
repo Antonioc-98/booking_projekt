@@ -70,8 +70,10 @@ passport.use(new LocalStrategy({usernameField: 'email'}, function verify(usernam
     db.query(`SELECT email, lozinkaHashed FROM users WHERE email = '${username}'`, (error, result) => {
     console.log('Provjera login')  
 
-    let hash_compare = bcrypt.compareSync(password, result[0].lozinkaHashed);
-    console.log(hash_compare)
+    if (result.length != 0) {
+        let hash_compare = bcrypt.compareSync(password, result[0].lozinkaHashed);
+        console.log(hash_compare)
+    
 
     if (error) { return done(error); }
       if (result.length === 0) { 
@@ -83,8 +85,8 @@ passport.use(new LocalStrategy({usernameField: 'email'}, function verify(usernam
             return done(null, false, {
             message: 'Incorrect username or password.' }); 
         };
+    }
         user = result[0];
-        console.log(user.email)
       return done(null, user);
     });
   }));
@@ -147,6 +149,9 @@ function loggedInV(req, res, next) {
 
 app.get('/', (req, res) => {
     let emailVlasnik = '';
+    const currentDate = new Date();
+    let currentDateSplit = currentDate.toISOString().split('T')[0]
+    console.log(currentDateSplit)
     if (req.user) {
         emailVlasnik = req.user.email;
     };
@@ -198,12 +203,18 @@ app.get('/login', (req, res) => {
     if (req.user) {
     console.log(req.user.email)
 }
+const error = req.query.error ? 'Wrong username or password' : null;
 
-    res.render('login.ejs');
+    res.render('login.ejs'), { message: error };
 });
 
-app.post('/login', passport.authenticate('local'), (req, res) => {
-    res.redirect('/');
+app.post('/login', passport.authenticate('local', { failureRedirect: '/login_invalid', failureMessage: true }),
+function(req, res) {
+  res.redirect('/');
+});
+
+app.get('/login_invalid', (req, res) => {
+    res.render('login_invalid.ejs');
 });
 
 // Passport logout
@@ -269,12 +280,73 @@ app.post('/register', async (req, res) => {
     });
 });
 
+// Promjena lozinke
+
 app.get('/promijeni_lozinku', (req, res) => {
     res.render('promijeni_lozinku.ejs');
 });
 
 app.post('/promijeni_lozinku', (req, res) => {
-    res.render('login.ejs');
+    let random = Math.floor(Math.random() * 1000000);
+
+    db.query(`SELECT email FROM users WHERE email = '${req.body.email}'`, (error, result) => {
+        if (result.length != 0) {
+            
+            db.query(`UPDATE users SET kod = ${random} WHERE email = '${req.body.email}'`, (error, result) => {
+                console.log(result)
+                let transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: 'antonio.praksa@gmail.com',
+                      pass: 'koup eyxk yjzz rbur'
+                    }
+                  });
+                  
+                  let mailOptions = {
+                    from: 'antonio.praksa@gmail.com',
+                    to: req.body.email,
+                    subject: `Kod`,
+                    text: `Kod za promjenu lozinke: ${random}`
+                  };
+                  
+                  transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                    }
+                  });
+            
+                res.render('promijeni_lozinku_kod.ejs');
+            });
+        } else {
+            res.render('promijeni_lozinku.ejs', {obavijest: 'Email ne postoji!'});
+        }
+    });
+    
+    
+});
+
+app.get('/promijeni_lozinku_kod', (req, res) => {
+    res.render('promijeni_lozinku_kod.ejs');
+});
+
+app.post('/promijeni_lozinku_kod', async (req, res) => {
+    const lozinka = await bcrypt.hash(req.body.password, 10);
+    db.query(`SELECT kod FROM users WHERE email = '${req.body.email}'`, (error, result) => {
+        console.log(result[0].kod)
+        console.log(Number(req.body.kod))
+        if (result[0].kod === Number(req.body.kod)) {
+            db.query(`UPDATE users SET lozinkaHashed = '${lozinka}' WHERE email = '${req.body.email}'`, (error, result) => {
+                console.log(result)
+                res.render('index.ejs');
+            });
+            
+        } else {
+            res.render('promijeni_lozinku_kod.ejs', {obavijest: 'Krivi kod, pokušajte ponovno!'});
+        }
+    });
+    
 });
 
 // Generiranje datuma
@@ -284,8 +356,8 @@ app.get('/generiranje_datuma', (req, res) => {
 });
 
 app.post('/generiranje_datuma', (req, res) => {
-    let d = 0;
-    for (let i = 0; i < 30; i++) {
+    let d = 29;
+    for (let i = 0; i < 1; i++) {
         d++;
         console.log(d)
         let datumGen = `2024-09-${d}`;
@@ -321,7 +393,8 @@ app.get('/mb_1', loggedIn, (req, res) => {
     let datumId = [];
     let datumCijena = [];
     const currentDate = new Date();
-    currentDateSplit = currentDate.toISOString().split('T')[0]
+    let currentDateSplit = currentDate.toISOString().split('T')[0]
+    console.log(currentDateSplit)
 
 // Prikaži datume ne starije od danas.
 

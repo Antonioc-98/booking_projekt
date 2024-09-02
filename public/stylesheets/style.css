@@ -34,13 +34,36 @@ a {
 	height: 70px;
 }
 
+header {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+}
+
 .izbornik {
-	display: grid;
-	grid-template-columns: 4fr 2fr 2fr 2fr;
+	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding-bottom: 15px;
 	padding-top: 15px;
-	height: 70px;
+
+	width: 100%;
+}
+
+.izbornik_1_2 {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+}
+
+.izbornik_2_2 {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
 }
 
 .izbornik_logo {

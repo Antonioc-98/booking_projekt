@@ -36,9 +36,44 @@
 		</div>
 	</header>
 	<body>
-		<h2><%= locals.resolved %></h2>
-		<a href="/login">
-			<div class="login_false_btn">Prijavi se</div>
-		</a>
+		<form action="/promijeni_lozinku_kod" method="POST" class="form_field_A">
+			<div class="input_okvir">
+				<div class="input_field_text">Email</div>
+				<div>
+					<label for="email"></label>
+					<input
+						type="email"
+						name="email"
+						id="email"
+						required
+						class="input_field_A" />
+				</div>
+				<div class="input_field_text">kod</div>
+				<div>
+					<label for="kod"></label>
+					<input
+						type="number"
+						name="kod"
+						id="kod"
+						required
+						class="input_field_A" />
+				</div>
+				<div class="input_field_text">Nova lozinka</div>
+				<div>
+					<label for="password"></label>
+					<input
+						type="password"
+						name="password"
+						id="password"
+						required
+						class="input_field_A" />
+				</div>
+				<br />
+				<button type="submit" class="promijeni_btn">Pošalji</button>
+			</div>
+		</form>
+		<h3 style="display: flex; justify-content: center; align-items: center">
+			<%= locals.obavijest %>
+		</h3>
 	</body>
 </html>
