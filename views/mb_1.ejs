@@ -38,9 +38,14 @@
 	<body>
 		<div class="kalendar">
 			<% if(locals.dValue.length != 0) { %>
-			<form action="/mb_1" method="POST" class="kalendar_form">
+			<form
+				action="/mb_1?query=<%=locals.tablicaValue%>"
+				method="POST"
+				class="kalendar_form">
+				<div class="odaberi_datum">Odaberi datume</div>
 				<div class="kalendar_rows">
-					<% for (let i = 0; i < locals.dValue.length; i++) { %>
+					<% for (let i = 0; i < locals.dValue.length; i++) { %> <%
+					if(locals.dStatus[i][0] === 1) { %>
 					<div class="kalendar_unutarnji">
 						<input
 							type="checkbox"
@@ -55,45 +60,92 @@
 							<div><%=`EUR ${locals.dCijena[i]}`%></div>
 						</label>
 					</div>
-					<% } %>
+					<% } else { %>
+					<div class="kalendar_unutarnji_nedostupno">
+						<div><%= locals.dValue[i] %></div>
+						<div>Nedostupno</div>
+					</div>
+					<%}%> <% } %>
 				</div>
-				<h3>Ukupna cijena: EUR <span id="totalSum">0</span></h3>
-				<button type="submit" class="promijeni_btn">Rezerviraj</button>
+				<div class="stanje">
+					<p id="discountMessage" style="font-size: 595; font-weight: bold"></p>
+					<h3>Ukupna cijena: EUR <span id="totalSum">0</span></h3>
+					<button type="submit" class="promijeni_btn" style="font-weight: bold">
+						Rezerviraj
+					</button>
+				</div>
 			</form>
 			<% } else { %>
 			<h1>Nema dostupnih datuma za rezervaciju</h1>
 			<%}%>
 		</div>
-	</body>
 
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			// Select all checkboxes
-			const checkboxes = document.querySelectorAll(".value-checkbox");
-			const totalSumDisplay = document.getElementById("totalSum");
+		<script>
+			// Function to calculate and update total sum and discount
+			function calculateTotal() {
+				const checkboxes = document.querySelectorAll(".value-checkbox");
+				const totalSumElement = document.getElementById("totalSum");
+				const discountMessageElement =
+					document.getElementById("discountMessage");
+				let total = 0;
+				let checkedCount = 0;
 
-			// Function to calculate the sum of the numbers in selected checkboxes
-			function calculateSum() {
-				let totalSum = 0;
-
-				// Iterate through each checkbox to check if it is checked
+				// Iterate through all checkboxes to calculate total
 				checkboxes.forEach((checkbox) => {
 					if (checkbox.checked) {
-						// If checked, find the paragraph element inside the label and parse its content as an integer
-						const paragraph = checkbox.nextElementSibling.querySelector("p");
-						const number = parseInt(paragraph.textContent);
-						totalSum += number;
+						const price = parseFloat(
+							checkbox.closest(".kalendar_unutarnji").querySelector(".cijena")
+								.textContent
+						);
+						total += price; // Add the price from .cijena class
+						checkedCount++;
 					}
 				});
 
-				// Update the total sum display
-				totalSumDisplay.textContent = totalSum;
+				// Apply discount based on the number of checkboxes selected
+				if (checkedCount >= 14) {
+					total *= 0.8; // Apply 20% discount
+					discountMessageElement.textContent = "20% popust!";
+				} else if (checkedCount >= 3) {
+					total *= 0.9; // Apply 10% discount
+					discountMessageElement.textContent = "10% popust!";
+				} else {
+					discountMessageElement.textContent = "Bez popusta"; // No discount
+				}
+
+				// Update total sum display
+				totalSumElement.textContent = total.toFixed(2);
 			}
 
-			// Add event listeners to all checkboxes to trigger sum calculation when checked or unchecked
-			checkboxes.forEach((checkbox) => {
-				checkbox.addEventListener("change", calculateSum);
+			// Function to handle the click on the div to toggle the checkbox
+			function handleDivClick() {
+				const kalendarRows = document.querySelectorAll(".kalendar_unutarnji");
+
+				kalendarRows.forEach((row) => {
+					row.addEventListener("click", (event) => {
+						const checkbox = row.querySelector(".value-checkbox");
+
+						if (checkbox) {
+							// Toggle the checkbox checked state
+							checkbox.checked = !checkbox.checked;
+
+							// Recalculate the total and apply discounts
+							calculateTotal();
+						}
+					});
+				});
+			}
+
+			// Initialize the functionality
+			document.addEventListener("DOMContentLoaded", () => {
+				handleDivClick();
+
+				// Add change event to checkboxes directly to ensure the total is calculated on checkbox toggle
+				const checkboxes = document.querySelectorAll(".value-checkbox");
+				checkboxes.forEach((checkbox) => {
+					checkbox.addEventListener("change", calculateTotal);
+				});
 			});
-		});
-	</script>
+		</script>
+	</body>
 </html>

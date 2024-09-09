@@ -166,12 +166,46 @@ app.get('/kontakt', (req, res) => {
     res.render('kontakt.ejs');
 });
 
+// Odabir parcele
 
-// Moje rezervacije
+app.get('/parcele_odabir', (req, res) => {
+    let cijenaMin = [];
+
+    const query = `
+  SELECT 
+  (SELECT MIN(cijena) FROM mb_1 WHERE status = 1) AS table1_cijena,
+  (SELECT MIN(cijena) FROM mb_2 WHERE status = 1) AS table2_cijena,
+  (SELECT MIN(cijena) FROM mb_3 WHERE status = 1) AS table3_cijena,
+  (SELECT MIN(cijena) FROM mb_4 WHERE status = 1) AS table4_cijena,
+  (SELECT MIN(cijena) FROM mb_5 WHERE status = 1) AS table5_cijena,
+  (SELECT MIN(cijena) FROM mb_6 WHERE status = 1) AS table6_cijena,
+  (SELECT MIN(cijena) FROM mb_7 WHERE status = 1) AS table7_cijena,
+  (SELECT MIN(cijena) FROM mb_8 WHERE status = 1) AS table8_cijena,
+  (SELECT MIN(cijena) FROM mb_9 WHERE status = 1) AS table9_cijena,
+  (SELECT MIN(cijena) FROM mb_10 WHERE status = 1) AS table10_cijena
+`;
+
+
+
+        db.query(query, (error, result) => {
+            const tabela = [result[0].table1_cijena, result[0].table2_cijena, result[0].table3_cijena, result[0].table4_cijena, result[0].table5_cijena, result[0].table6_cijena, result[0].table7_cijena, result[0].table8_cijena, result[0].table9_cijena, result[0].table10_cijena];
+            for (let i = 0; i < 10; i++) {
+                cijenaMin[i] = tabela[i]
+            }
+
+            res.render('parcele_odabir.ejs', {
+                cMin: cijenaMin,
+            });
+        });
+    
+});
 
 app.get('/rezervacija', (req, res) => {
-    res.render('rezervacija.ejs');
+    console.log(req.query.query)
+    res.render('rezervacija.ejs', {parcela: req.query.query});
 });
+
+// Moje rezervacije
 
 app.get('/moje_rezervacije', loggedIn, (req, res) => {
     let rezerviraniDatumi = [];
@@ -357,7 +391,7 @@ app.get('/generiranje_datuma', (req, res) => {
 
 app.post('/generiranje_datuma', (req, res) => {
     let d = 29;
-    for (let i = 0; i < 1; i++) {
+    for (let i = 1; i < 2; i++) {
         d++;
         console.log(d)
         let datumGen = `2024-09-${d}`;
@@ -389,29 +423,33 @@ app.get('/odabir', (req, res) => {
 
 app.get('/mb_1', loggedIn, (req, res) => {
 
+    let tablica = `mb_${req.query.query}`;
+    console.log(tablica)
     let datumValue = [];
     let datumId = [];
     let datumCijena = [];
+    let datumStatus = [];
     const currentDate = new Date();
     let currentDateSplit = currentDate.toISOString().split('T')[0]
     console.log(currentDateSplit)
 
 // Prikaži datume ne starije od danas.
 
-    db.query(`SELECT id FROM mb_1 WHERE datum = '${currentDateSplit}'`, (error, result) => {
+    db.query(`SELECT id FROM ${tablica} WHERE datum = '${currentDateSplit}'`, (error, result) => {
         datumDanas = result[0].id;
         //console.log(typeof(result[0].id))
 
 //
 
-    db.query(`SELECT datum, id, cijena FROM mb_1 WHERE status = 1 AND id > ${datumDanas}`, (error, result) => {  
+    db.query(`SELECT datum, id, cijena, status FROM ${tablica} WHERE id > ${datumDanas}`, (error, result) => {  
         
         for (let i = 0; i<result.length; i++) {
         datumValue[i] = (result[i].datum)
         datumId[i] = (result[i].id)
         datumCijena[i] = (result[i].cijena)
+        datumStatus[i] = [result[i].status]
         }
-        //console.log(result)
+        console.log(datumStatus[0][0])
         //console.log(datumValue)
         //console.log(datumId)
         //console.log(datumCijena)
@@ -419,7 +457,9 @@ app.get('/mb_1', loggedIn, (req, res) => {
         res.render('mb_1.ejs', {
             dValue: datumValue,
             dId: datumId,
-            dCijena: datumCijena
+            dCijena: datumCijena,
+            dStatus: datumStatus,
+            tablicaValue: req.query.query
 
         });
     });
@@ -429,29 +469,52 @@ app.get('/mb_1', loggedIn, (req, res) => {
 
 app.post('/mb_1', loggedIn, (req, res) => {
 
+    let tablica = `mb_${req.query.query}`;
+    console.log(tablica)
+
     let random = Math.floor(Math.random() * 100000000);
 
     let size = Object.keys(req.body).length;
     console.log(`size: ${size}`)
+    console.log('ODABRANI DATUMI')
+    console.log(req.body)
     // For object length
     for (const [key, value] of Object.entries(req.body)) {
-        db.query(`UPDATE mb_1 SET status = 0, korisnik_email = '${req.user.email}' WHERE datum = '${value}'`, (error, result) => {  
+        db.query(`UPDATE ${tablica} SET status = 0, korisnik_email = '${req.user.email}', parcela_id = ${random} WHERE datum = '${value}'`, (error, result) => {  
             console.log(result)
         });
       }
 
+      
     //Nodemailer
 
-    db.query(`SELECT datum, cijena FROM mb_1 WHERE korisnik_email = '${req.user.email}'`, (error, result) => {  
+    db.query(`SELECT datum, cijena FROM ${tablica} WHERE parcela_id = ${random}`, (error, result) => {  
         
+    let suma;
     let cijenaValue = [];
     let datumValue = [];
     for (let i = 0; i < result.length; i++) {
         datumValue[i] = result[i].datum;
         cijenaValue[i] = result[i].cijena;
     }
+    console.log(datumValue)
+    console.log(cijenaValue)
 
-    const suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+    if (Object.entries(req.body).length > 2 && Object.entries(req.body).length < 13) {
+    suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+    suma *= 0.9;
+} else if (Object.entries(req.body).length > 13) {
+    suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+    suma *= 0.8;
+} else {
+    suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+}
+
+db.query(`INSERT INTO računi SET email_korisnik = '${req.user.email}', cijena = ${suma}, id = ${random}`, (error, result) => {  
+    console.log(result)
+});
+
+console.log(`Suma izračunata ${suma}`)
 
       let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -475,102 +538,10 @@ app.post('/mb_1', loggedIn, (req, res) => {
           console.log('Email sent: ' + info.response);
         }
       });
-    });
+    
+});
     //
       
-    res.render('odabir.ejs', {});
-});
-
-// mb_2
-
-app.get('/mb_2', loggedIn, (req, res) => {
-
-    let datumValue = [];
-    let datumId = [];
-    let datumCijena = [];
-    const currentDate = new Date();
-    currentDateSplit = currentDate.toISOString().split('T')[0]
-
-// Prikaži datume ne starije od danas.
-
-    db.query(`SELECT id FROM mb_2 WHERE datum = '${currentDateSplit}'`, (error, result) => {
-        datumDanas = result[0].id;
-        //console.log(typeof(result[0].id))
-
-    db.query(`SELECT datum, id, cijena FROM mb_2 WHERE status = 1 AND id > ${datumDanas}`, (error, result) => {  
-        
-        for (let i = 0; i<result.length; i++) {
-        datumValue[i] = (result[i].datum)
-        datumId[i] = (result[i].id)
-        datumCijena[i] = (result[i].cijena)
-        }
-        //console.log(result)
-        //console.log(datumValue)
-        //console.log(datumId)
-        //console.log(datumCijena)
-        //console.log(currentDateSplit)
-        res.render('mb_2.ejs', {
-            dValue: datumValue,
-            dId: datumId,
-            dCijena: datumCijena
-
-        });
-    });
-});
-    
-});
-
-app.post('/mb_2', loggedIn, (req, res) => {
-
-    let random = Math.floor(Math.random() * 100000000);
-
-    let size = Object.keys(req.body).length;
-    console.log(`size: ${size}`)
-    // For object length
-    for (const [key, value] of Object.entries(req.body)) {
-        db.query(`UPDATE mb_2 SET status = 0, korisnik_email = '${req.user.email}' WHERE datum = '${value}'`, (error, result) => {  
-            console.log(result)
-        });
-      }
-
-    //Nodemailer
-
-    db.query(`SELECT datum, cijena FROM mb_2 WHERE korisnik_email = '${req.user.email}'`, (error, result) => {  
-        
-        let cijenaValue = [];
-        let datumValue = [];
-        for (let i = 0; i < result.length; i++) {
-            datumValue[i] = result[i].datum;
-            cijenaValue[i] = result[i].cijena;
-        }
-    
-        const suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
-    
-          let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user: 'antonio.praksa@gmail.com',
-              pass: 'koup eyxk yjzz rbur'
-            }
-          });
-          
-          let mailOptions = {
-            from: 'antonio.praksa@gmail.com',
-            to: req.user.email,
-            subject: `Rezervacija broj ${random}`,
-            text: `Uspješno ste rezervirali za datume ${datumValue}. Ukupna cijena ${suma} EUR. Ugodan boravak želi vam Kamp Adriatic!`
-          };
-          
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
-        });
-        //
-
     res.render('odabir.ejs', {});
 });
 
@@ -660,47 +631,152 @@ app.post('/otkazivanje_admin', loggedInA, (req, res) => {
 });
 });
 
-// Vlasnik
+// Vlasnik 
 
 app.get('/vlasnik', loggedInV, (req, res) => {
-    let datumValue = [];
-    let cijenaValue = [];
-    let emailValue = [];
-    db.query(`SELECT datum, cijena, korisnik_email FROM mb_1 WHERE status = 0`, (error, result) => {  
-        for (let i = 0; i < result.length; i++) {
-            datumValue[i] = result[i].datum;
-            cijenaValue[i] = result[i].cijena;
-            emailValue[i] = result[i].korisnik_email;
-        }
-        const suma = cijenaValue.reduce((partialSum, a) => partialSum + a, 0);
+    let datumValue_1 = [];
+    let emailValue_1 = [];
 
-        let datumValue_2 = [];
-    let cijenaValue_2 = [];
+    let datumValue_2 = [];
     let emailValue_2 = [];
+
+    let datumValue_3 = [];
+    let emailValue_3 = [];
+
+    let datumValue_4 = [];
+    let emailValue_4 = [];
+
+    let datumValue_5 = [];
+    let emailValue_5 = [];
+
+    let datumValue_6 = [];
+    let emailValue_6 = [];
+
+    let datumValue_7 = [];
+    let emailValue_7 = [];
+
+    let datumValue_8 = [];
+    let emailValue_8 = [];
+
+    let datumValue_9 = [];
+    let emailValue_9 = [];
+
+    let datumValue_10 = [];
+    let emailValue_10 = [];
+
+    let prihodi = []
+    let prihodiSuma;
+    db.query(`SELECT cijena FROM računi`, (error, result) => { 
+        
+    for (let i = 0; i<result.length; i++) {
+        prihodi[i] = result[i].cijena;
+    }
+
+    prihodiSuma = prihodi.reduce((partialSum, a) => partialSum + a, 0);
+    console.log(prihodiSuma)
+   
+
+    db.query(`SELECT datum, cijena, korisnik_email FROM mb_1 WHERE status = 0`, (error, result) => { 
+
+        for (let i = 0; i < result.length; i++) {
+            datumValue_1[i] = result[i].datum;
+            emailValue_1[i] = result[i].korisnik_email;
+            
+        }
 
     db.query(`SELECT datum, cijena, korisnik_email FROM mb_2 WHERE status = 0`, (error, result) => {  
         for (let i = 0; i < result.length; i++) {
             datumValue_2[i] = result[i].datum;
-            cijenaValue_2[i] = result[i].cijena;
             emailValue_2[i] = result[i].korisnik_email;
+            
         }
-        const suma_2 = cijenaValue_2.reduce((partialSum, a) => partialSum + a, 0);
+
+        db.query(`SELECT datum, cijena, korisnik_email FROM mb_3 WHERE status = 0`, (error, result) => {  
+            for (let i = 0; i < result.length; i++) {
+                datumValue_3[i] = result[i].datum;
+                emailValue_3[i] = result[i].korisnik_email;
+                
+            }
+
+            db.query(`SELECT datum, cijena, korisnik_email FROM mb_4 WHERE status = 0`, (error, result) => {  
+                for (let i = 0; i < result.length; i++) {
+                    datumValue_4[i] = result[i].datum;
+                    emailValue_4[i] = result[i].korisnik_email;
+                    
+                }
+                db.query(`SELECT datum, cijena, korisnik_email FROM mb_5 WHERE status = 0`, (error, result) => {  
+                    for (let i = 0; i < result.length; i++) {
+                        datumValue_5[i] = result[i].datum;
+                        emailValue_5[i] = result[i].korisnik_email;
+                        
+                    }
+                    db.query(`SELECT datum, cijena, korisnik_email FROM mb_6 WHERE status = 0`, (error, result) => {  
+                        for (let i = 0; i < result.length; i++) {
+                            datumValue_6[i] = result[i].datum;
+                            emailValue_6[i] = result[i].korisnik_email;
+                            
+                        }
+                        db.query(`SELECT datum, cijena, korisnik_email FROM mb_7 WHERE status = 0`, (error, result) => {  
+                            for (let i = 0; i < result.length; i++) {
+                                datumValue_7[i] = result[i].datum;
+                                emailValue_7[i] = result[i].korisnik_email;
+                                
+                            }
+                            db.query(`SELECT datum, cijena, korisnik_email FROM mb_8 WHERE status = 0`, (error, result) => {  
+                                for (let i = 0; i < result.length; i++) {
+                                    datumValue_8[i] = result[i].datum;
+                                    emailValue_8[i] = result[i].korisnik_email;
+                                    
+                                }
+                                db.query(`SELECT datum, cijena, korisnik_email FROM mb_9 WHERE status = 0`, (error, result) => {  
+                                    for (let i = 0; i < result.length; i++) {
+                                        datumValue_9[i] = result[i].datum;
+                                        emailValue_9[i] = result[i].korisnik_email;
+                                        
+                                    }
+                                    db.query(`SELECT datum, cijena, korisnik_email FROM mb_10 WHERE status = 0`, (error, result) => {  
+                                        for (let i = 0; i < result.length; i++) {
+                                            datumValue_10[i] = result[i].datum;
+                                            emailValue_10[i] = result[i].korisnik_email;
+                                            
+                                        }
 
         res.render('vlasnik.ejs', {
-            dValue: datumValue,
-            cValue: cijenaValue,
-            eValue: emailValue,
-            sum: suma,
+            dValue: datumValue_1,
+            eValue: emailValue_1,
             dValue_2: datumValue_2,
-            cValue_2: cijenaValue_2,
             eValue_2: emailValue_2,
-            sum_2: suma_2
+            dValue_3: datumValue_3,
+            eValue_3: emailValue_3,
+            dValue_4: datumValue_4,
+            eValue_4: emailValue_4,
+            dValue_5: datumValue_5,
+            eValue_5: emailValue_5,
+            dValue_6: datumValue_6,
+            eValue_6: emailValue_6,
+            dValue_7: datumValue_7,
+            eValue_7: emailValue_7,
+            dValue_8: datumValue_8,
+            eValue_8: emailValue_8,
+            dValue_9: datumValue_9,
+            eValue_9: emailValue_9,
+            dValue_10: datumValue_10,
+            eValue_10: emailValue_10,
+            sValue: prihodiSuma
         });
     });
     });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
+    });
 
     
-    
+})
 });
 
 

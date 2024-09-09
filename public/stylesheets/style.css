@@ -291,6 +291,21 @@ header {
 	scale: 101%;
 }
 
+.kartica_2 {
+	transition: all 125ms ease;
+	display: grid;
+	grid-template-rows: 50px 250px 50px 180px 140px;
+	height: 700px;
+	width: 390px;
+	border-radius: 25px;
+	box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+		0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.kartica:hover {
+	scale: 101%;
+}
+
 .kartica_naslov {
 	display: flex;
 	justify-content: center;
@@ -362,6 +377,7 @@ header {
 
 .statistika {
 	display: flex;
+	flex-wrap: wrap;
 	flex-direction: row;
 	justify-content: space-evenly;
 	align-items: start;
@@ -373,6 +389,7 @@ header {
 	justify-content: center;
 	align-items: center;
 	padding: 15px;
+	margin-bottom: 20px;
 	border: 1px solid black;
 	border-radius: 7px;
 }
@@ -383,7 +400,9 @@ header {
 }
 
 .statistika_prihodi {
+	font-size: 20px;
 	font-weight: 600;
+	margin: 10px;
 }
 
 /* Kalendar */
@@ -456,6 +475,41 @@ header {
 	align-items: center;
 	padding-bottom: 10px;
 	padding-right: 5px;
+}
+
+.kalendar_unutarnji_nedostupno {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 150px;
+	height: 70px;
+	margin: 5px;
+	background-color: gray;
+	color: white;
+	font-weight: 700;
+	border-radius: 7px;
+}
+
+.kalendar_unutarnji_nedostupno:hover {
+	transition: all 250ms ease;
+	scale: 102%;
+	background-color: #ff973b;
+}
+.odaberi_datum {
+	font-size: 25px;
+	font-weight: 595;
+	padding-bottom: 20px;
+	color: #ff973b;
+}
+
+.stanje {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	width: 400px;
 }
 
 /*------------------*/
@@ -566,4 +620,10 @@ header {
 
 .logout_btn:hover {
 	scale: 105%;
+}
+
+/*============*/
+
+.expanded .extra-content {
+	display: block;
 }

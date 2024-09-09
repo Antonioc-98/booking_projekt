@@ -35,29 +35,30 @@
 			</div>
 		</div>
 	</header>
+	<body>
 		<main>
-			<div class="rezervacija_naslov">Rezervacija</div>
-			<div class="plan_div">
-				<img src="./images/plan.png" alt="" />
+			<div class="rezervacija_naslov" style="padding-bottom: 20px">
+				Rezervacija
 			</div>
 			<div class="kartice">
+				<% if (locals.parcela) { %>
 				<div class="kartica">
-					<div class="kartica_naslov">Mobilna kuća 1</div>
+					<div class="kartica_naslov">Mobilna kuća <%= locals.parcela %></div>
 					<img src="./images/parcela_img.png" alt="" />
 					<div class="kartica_informacije">Informacije</div>
 					<div>
 						<ul>
 							<li>Dimenzije: 32m²</li>
 							<br />
-							<li>Udaljenost od mora: 75 m</li>
-							<br />
 							<li>Dozvoljeno osoba: 7</li>
+							<br />
+							<li>Wifi</li>
 							<br />
 							<li>Dozvoljeni kućni ljubimci</li>
 						</ul>
 					</div>
 					<div class="kartica_rezerviraj">
-						<a href="/mb_1">
+						<a href="/mb_1?query=<%= locals.parcela %>">
 							<div class="kartica_btn">Rezerviraj online</div>
 						</a>
 						<a href="/kontakt">
@@ -65,84 +66,11 @@
 						</a>
 					</div>
 				</div>
-				<div class="kartica">
-					<div class="kartica_naslov">Mobilna kuća 2</div>
-					<img src="./images/parcela_img_m.png" alt="" />
-					<div class="kartica_informacije">Informacije</div>
-					<div>
-						<ul>
-							<li>Dimenzije: 32m²</li>
-							<br />
-							<li>Udaljenost od mora: 75 m</li>
-							<br />
-							<li>Dozvoljeno osoba: 7</li>
-							<br />
-							<li>Dozvoljeni kućni ljubimci</li>
-						</ul>
-					</div>
-					<div class="kartica_rezerviraj">
-						<a href="/mb_2">
-							<div class="kartica_btn">Rezerviraj online</div>
-						</a>
-						<a href="/kontakt">
-							<div class="kartica_btn">Rezerviraj preko e-mail/telefona</div>
-						</a>
-					</div>
-				</div>
-				<div class="kartica">
-					<div class="kartica_naslov">Mobilna kuća 3</div>
-					<img src="./images/parcela_img.png" alt="" />
-					<div class="kartica_informacije">Informacije</div>
-					<div>
-						<ul>
-							<li>Dimenzije: 32m²</li>
-							<br />
-							<li>Udaljenost od mora: 75 m</li>
-							<br />
-							<li>Dozvoljeno osoba: 7</li>
-							<br />
-							<li>Dozvoljeni kućni ljubimci</li>
-						</ul>
-					</div>
-					<div class="kartica_rezerviraj">
-						<p>Trenutno nedostupno!</p>
-						<a href="">
-							<div class="kartica_btn_nedostupno">Rezerviraj online</div>
-						</a>
-						<a href="/kontakt">
-							<div class="kartica_btn_nedostupno">
-								Rezerviraj preko e-mail/telefona
-							</div>
-						</a>
-					</div>
-				</div>
-				<div class="kartica">
-					<div class="kartica_naslov">Mobilna kuća 4</div>
-					<img src="./images/parcela_img_m.png" alt="" />
-					<div class="kartica_informacije">Informacije</div>
-					<div>
-						<ul>
-							<li>Dimenzije: 32m²</li>
-							<br />
-							<li>Udaljenost od mora: 75 m</li>
-							<br />
-							<li>Dozvoljeno osoba: 7</li>
-							<br />
-							<li>Dozvoljeni kućni ljubimci</li>
-						</ul>
-					</div>
-					<div class="kartica_rezerviraj">
-						<p>Trenutno nedostupno!</p>
-						<a href="">
-							<div class="kartica_btn_nedostupno">Rezerviraj online</div>
-						</a>
-						<a href="/kontakt">
-							<div class="kartica_btn_nedostupno">
-								Rezerviraj preko e-mail/telefona
-							</div>
-						</a>
-					</div>
-				</div>
+				<% } else { %>
+				<a href="/parcele_odabir">
+					<div class="kartica_btn">Pogledaj parcele</div>
+				</a>
+				<% } %>
 			</div>
 		</main>
 	</body>

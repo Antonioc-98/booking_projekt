@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./stylesheets/style.css" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet" />
+	</head>
+	<header>
+		<div class="izbornik">
+			<div class="izbornik_1_2">
+				<div class="izbornik_logo">
+					<img src="./images/LOGO.svg" alt="" class="logo" />
+				</div>
+			</div>
+			<div class="izbornik_2_2">
+				<a href="/" class="izbornik_linkovi">
+					<div class="izbornik_vanjski">
+						<div class="izbornik_unutarnji">Početna</div>
+					</div>
+				</a>
+				<a href="#onama" class="izbornik_linkovi">
+					<div class="izbornik_vanjski">
+						<div class="izbornik_unutarnji">O nama</div>
+					</div>
+				</a>
+				<a href="/moje_rezervacije" class="izbornik_linkovi">
+					<div class="izbornik_vanjski">
+						<div class="izbornik_unutarnji">Moje rezervacije</div>
+					</div>
+				</a>
+			</div>
+		</div>
+	</header>
+	<body>
+		<main>
+			<div class="rezervacija_naslov">Rezervacija</div>
+			<div class="plan_div">
+				<img src="./images/plan.png" alt="" />
+			</div>
+			<div class="kartice">
+				<% for (let i = 0; i < 10; i++) {%>
+				<div class="kartica" style="height: 450px">
+					<div class="kartica_naslov">Mobilna kuća <%= i+1 %></div>
+					<img src="./images/parcela_img.png" alt="" />
+					<div class="kartica_rezerviraj">
+						<div
+							style="padding-top: 20px; padding-bottom: 20px; font-weight: 595">
+							Cijena po noćenju od <%= locals.cMin[i] %> EUR
+						</div>
+						<% let mb_id = i+1; %>
+						<a href="/rezervacija?query=<%= mb_id %>">
+							<div class="kartica_btn">Pogledaj</div>
+						</a>
+					</div>
+				</div>
+				<%}%>
+			</div>
+		</main>
+	</body>
+</html>

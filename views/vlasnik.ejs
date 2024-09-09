@@ -26,33 +26,98 @@
 		</div>
 	</header>
 	<body>
+		<div class="statistika_prihodi">
+			Ukupni prihodi od rezervacija: <%= `${sValue}` %> Eura
+		</div>
 		<div class="statistika">
 			<div class="statistika_datumi">
 				<% if(locals.dValue) { %>
-				<p class="statistika_naslov">Sve rezervacije za Mobilnu kuću 1</p>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 1</p>
 				<% for (let i = 0; i < locals.dValue.length; i++) { %>
-				<p>
-					<%= `${locals.dValue[i]}, ${locals.cValue[i]} EUR,
-					${locals.eValue[i]}` %>
-				</p>
+				<p><%= `${locals.dValue[i]}, ${locals.eValue[i]}` %></p>
 				<% } %>
-				<p class="statistika_prihodi">
-					<%= `Ukupni prihodi: ${locals.sum} EUR` %>
-				</p>
+				<p class="statistika_prihodi"></p>
 				<% } %>
 			</div>
 			<div class="statistika_datumi">
 				<% if(locals.dValue_2) { %>
-				<p class="statistika_naslov">Sve rezervacije za Mobilnu kuću 2</p>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 2</p>
 				<% for (let i = 0; i < locals.dValue_2.length; i++) { %>
-				<p>
-					<%= `${locals.dValue_2[i]}, ${locals.cValue_2[i]} EUR,
-					${locals.eValue_2[i]}` %>
-				</p>
+				<p><%= `${locals.dValue_2[i]}, ${locals.eValue_2[i]}` %></p>
 				<% } %>
-				<p class="statistika_prihodi">
-					<%= `Ukupni prihodi: ${locals.sum_2} EUR` %>
-				</p>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_3) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 3</p>
+				<% for (let i = 0; i < locals.dValue_3.length; i++) { %>
+				<p><%= `${locals.dValue_3[i]}, ${locals.eValue_3[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_4) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 4</p>
+				<% for (let i = 0; i < locals.dValue_4.length; i++) { %>
+				<p><%= `${locals.dValue_4[i]}, ${locals.eValue_4[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_5) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 5</p>
+				<% for (let i = 0; i < locals.dValue_5.length; i++) { %>
+				<p><%= `${locals.dValue_5[i]}, ${locals.eValue_5[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_6) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 6</p>
+				<% for (let i = 0; i < locals.dValue_6.length; i++) { %>
+				<p><%= `${locals.dValue_6[i]}, ${locals.eValue_6[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_7) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 7</p>
+				<% for (let i = 0; i < locals.dValue_7.length; i++) { %>
+				<p><%= `${locals.dValue_7[i]}, ${locals.eValue_7[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_2) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 8</p>
+				<% for (let i = 0; i < locals.dValue_8.length; i++) { %>
+				<p><%= `${locals.dValue_8[i]}, ${locals.eValue_8[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_9) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 9</p>
+				<% for (let i = 0; i < locals.dValue_9.length; i++) { %>
+				<p><%= `${locals.dValue_9[i]}, ${locals.eValue_9[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
+				<% } %>
+			</div>
+			<div class="statistika_datumi">
+				<% if(locals.dValue_10) { %>
+				<p class="statistika_naslov">Sve rezervacije za Parcelu 10</p>
+				<% for (let i = 0; i < locals.dValue_10.length; i++) { %>
+				<p><%= `${locals.dValue_10[i]}, ${locals.eValue_10[i]}` %></p>
+				<% } %>
+				<p class="statistika_prihodi"></p>
 				<% } %>
 			</div>
 		</div>
