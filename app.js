@@ -139,13 +139,6 @@ function loggedInV(req, res, next) {
     }
 }
 
-//https://www.youtube.com/watch?v=_lZUq39FGv0 8.29
-
-//https://www.youtube.com/watch?v=TDe7DRYK8vU
-//https://www.youtube.com/watch?v=oExWh86IgHA
-
-//Slike za kamp
-//https://secure.phobs.net/book.php?page=cross_selling&companyid=956&hotelid=5761&checkin=2024-07-29&checkout=2024-07-30&ibelang=hr&unitid=27783&crcid=62d973b617cb21b6ad74eb1248fb4ac7&eccode=eyJjaGVja19hZ2Fpbl9ub3RlIjp0cnVlfQ%253D%253D
 
 app.get('/', (req, res) => {
     let emailVlasnik = '';
